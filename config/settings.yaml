@@ -1,0 +1,34 @@
+#------------------------------------------------------------------------------
+# en: Threading Configuration | ru: Конфигурация потоков
+#------------------------------------------------------------------------------
+# en: Controls parallel execution capacity (min: 1) | ru: Управление количеством параллельных выполнений (минимум: 1)
+threads: 1
+
+#------------------------------------------------------------------------------
+# en: Timing Settings | ru: Настройки времени
+#------------------------------------------------------------------------------
+# en: Initial delay range before starting operations (seconds) | ru: Диапазон начальной задержки перед началом выполнения (секунды)
+delay_before_start:
+    min: 1
+    max: 100
+
+# en: Delay between tasks (seconds) | ru: Задержка между задачами (секунды)
+delay_between_tasks:
+    min: 100
+    max: 300
+
+# TELEGRAM DATA
+send_stats_to_telegram: true
+
+tg_token: ""  # https://t.me/BotFather
+tg_id: ""  # https://t.me/getmyid_bot
+
+#------------------------------------------------------------------------------
+# Network Settings
+#------------------------------------------------------------------------------
+
+# Pharos RPC endpoint
+pharos_rpc_endpoints: 
+    - https://testnet.dplabs-internal.com
+# Pharos Explorer
+pharos_evm_explorer: https://testnet.pharosscan.xyz
