@@ -1,5 +1,3 @@
-# Somnia Bot
-
 <div align="center">
 
 ```
