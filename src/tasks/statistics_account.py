@@ -80,7 +80,7 @@ class StatisticsAccount(AsyncLogger):
         
         # Упрощённая статистика
         if SIMPLIFIED_STATISTICS:
-            stats = f"\n{self.wallet_address} - {total_points} points - {level} level"
+            stats = f"{self.wallet_address} - {total_points} points - {level} level"
             await self.logger_msg(stats, "success")
             return stats
         
