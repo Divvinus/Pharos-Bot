@@ -74,6 +74,11 @@ class PharosBot:
         async with SendToFriends(account) as onchain:
             return await onchain.run_send_to_friends()
         
+    @staticmethod
+    async def process_mint_pharos_badge(account: Account) -> tuple[bool, str]:
+        async with PharosBadge(account) as onchain:
+            return await onchain.run_mint_pharos_badge()
+        
     """ ---------------------------------- Zenith Finance -----------------------------------------"""
     @staticmethod
     async def process_connect_twitter_zenith(account: Account) -> tuple[bool, str]:

@@ -47,3 +47,8 @@ class ZenithSwapRouterContract(BaseContract):
 class ZenithQuoterContract(BaseContract):
     address: str = "0x00f2f47d1ed593Cf0AF0074173E9DF95afb0206C"
     abi_file: str = "zenith_quoter.json"
+
+@dataclass(slots=True)
+class PharosBadgeContract(BaseContract):
+    address: str = "0x1da9f40036bee3fda37ddd9bff624e1125d8991d"
+    abi_file: str = "pharos_badge.json"

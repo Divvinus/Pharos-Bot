@@ -33,6 +33,7 @@ class Console:
                 MenuItem("Daily Check-in", action="daily_check_in"),         
                 MenuItem("Twitter tasks", action="twitter_tasks"),
                 MenuItem('"Send To Friends" task', action="send_to_friends"),
+                MenuItem('Mint Pharos Testnet Badge', action="mint_pharos_badge"),
             ]),
             
             MenuItem("Faucets", children=[           
