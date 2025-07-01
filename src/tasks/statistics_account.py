@@ -2,7 +2,7 @@ from typing import Self
 
 from bot_loader import config
 from .registration import ConnectWalletPharos
-from configs import MAX_RETRY_ATTEMPTS, RETRY_SLEEP_RANGE
+from configs import MAX_RETRY_ATTEMPTS, RETRY_SLEEP_RANGE, SIMPLIFIED_STATISTICS
 from src.api.http import HTTPClient
 from src.logger import AsyncLogger
 from src.models import Account
@@ -53,11 +53,8 @@ class StatisticsAccount(AsyncLogger):
             'referer': 'https://testnet.pharosnetwork.xyz/'
         }
         
-    async def get_statistics(self) -> tuple[bool, str]:        
-        params = {
-            'address': self.wallet_address
-        }
-        
+    async def get_statistics(self) -> str:        
+        params = {'address': self.wallet_address}
         response = await self.api_client.send_request(
             method="GET",
             endpoint="/user/profile",
@@ -66,21 +63,34 @@ class StatisticsAccount(AsyncLogger):
         )
         
         response_data = response['data']
-        
         user = response_data.get("data", {}).get("user_info", {})
-    
-        # Проверка привязки социальных сетей
+        total_points = user.get('TotalPoints', 0)
+        
+        # Определение уровня по очкам
+        if total_points >= 6000:
+            level = 4
+        elif total_points >= 3000:
+            level = 3
+        elif total_points >= 2000:
+            level = 2
+        elif total_points >= 1000:
+            level = 1
+        else:
+            level = 0
+        
+        # Упрощённая статистика
+        if SIMPLIFIED_STATISTICS:
+            stats = f"\n{self.wallet_address} - {total_points} points - {level} level"
+            await self.logger_msg(stats, "success")
+            return stats
+        
+        # Полная статистика
         twitter_status = "Bound" if user.get("XId") else "Not Bound"
         discord_status = "Bound" if user.get("DiscordId") else "Not Bound"
-        
-        # Форматирование дат
         create_time = user.get("CreateTime", "").replace("T", " ").split(".")[0]
         update_time = user.get("UpdateTime", "").replace("T", " ").split(".")[0]
-        
-        # Форматирование булевых значений
         is_kol = "Yes" if user.get("IsKol") else "No"
         
-        # Построение статистики
         stats = f"""
             📊 Account statistics {user.get('Address', '')}
 
@@ -95,9 +105,10 @@ class StatisticsAccount(AsyncLogger):
 
             ⭐ KOL Status: {is_kol}
             💯 Points:
-            • Total points: {user.get('TotalPoints', 0)}
+            • Total points: {total_points}
             • Task points: {user.get('TaskPoints', 0)}
             • Invite points: {user.get('InvitePoints', 0)}
+            • Level: {level}
 
             👨‍👦 Referral system:
             • Father: {user.get('FatherAddress', '')}
@@ -105,7 +116,6 @@ class StatisticsAccount(AsyncLogger):
         """
         
         await self.logger_msg(stats, "success")
-        
         return stats
         
     async def run_statistics_account(self) -> tuple[bool, str]:
@@ -116,9 +126,6 @@ class StatisticsAccount(AsyncLogger):
             return result, self.jwt_token
         
         for attempt in range(MAX_RETRY_ATTEMPTS):
-            await self.logger_msg(
-                f"Preparing data for task execution. Attempt {attempt + 1} / {MAX_RETRY_ATTEMPTS}", "info", self.wallet_address
-            )   
             try:
                 return await self.get_statistics()                                
             except Exception as e:
