@@ -26,7 +26,7 @@ MAX_SEND_PHRS = 0.1                                                 # Maximum nu
 """ --------------------------------- Zenith Finance -----------------------------"""
 SLEEP_SWAP = (30, 90)                                               # (min, max) in seconds | Delay between swaps
 PAIR_SWAP = {                                                       # Swap pairs
-    1: ["", "", ],
+    1: ["", "", 0],
 }
 """
 Number_pair: [outgoing_token, received_token, %_of_outgoing_token]
