@@ -1,5 +1,4 @@
 import time
-import asyncio
 from pydantic import ValidationError
 from typing import Self
 
@@ -112,7 +111,6 @@ class ZenithSwapModule(AsyncLogger, Wallet):
         Расчет amount_out_minimum с fallback стратегией
         """
         try:
-            # Метод 1: Пытаемся использовать Quoter V2
             amount_out, quote_details = await self.get_quote(
                 token_in, token_out, amount_in, fee
             )
