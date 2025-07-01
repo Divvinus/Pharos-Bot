@@ -4,6 +4,9 @@ MAX_RETRY_ATTEMPTS = 3                                              # Number of 
 RETRY_SLEEP_RANGE = (3, 9)                                          # (min, max) in seconds
 SLIPPAGE = 5                                                        # Slippage
 
+""" --------------------------------- Analytics -----------------------------"""
+SIMPLIFIED_STATISTICS = False
+
 
 """ --------------------------------- APi keys of captcha solvers -----------------------------"""
 CAP_MONSTER_API_KEY = ""
