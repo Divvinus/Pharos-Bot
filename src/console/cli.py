@@ -44,6 +44,7 @@ class Console:
             
             MenuItem("Zenith Finance", children=[           
                 MenuItem("Connect twitter", action="connect_twitter_zenith"),
+                MenuItem("Swap", action="swap_zenith"),
             ]),
             
             MenuItem("Auto Route", action="auto_route"),

@@ -39,11 +39,11 @@ class ERC20Contract(BaseContract):
     abi_file: str = "erc_20.json"
     
 @dataclass(slots=True)
-class HypurrContract(BaseContract):
-    address: str = "0xB96f07367e69e86d6e9C3F29215885104813eeAE"
-    abi_file: str = "hypurr.json"
+class ZenithSwapRouterContract(BaseContract):
+    address: str = "0x1a4de519154ae51200b0ad7c90f7fac75547888a"
+    abi_file: str = "zenith_swap_router.json"
     
 @dataclass(slots=True)
-class GotchipusNFTContract(BaseContract):
-    address: str = "0x0000000038f050528452d6da1e7aacfa7b3ec0a8"
-    abi_file: str = "gotchipus_nft.json"
+class ZenithQuoterContract(BaseContract):
+    address: str = "0x00f2f47d1ed593Cf0AF0074173E9DF95afb0206C"
+    abi_file: str = "zenith_quoter.json"

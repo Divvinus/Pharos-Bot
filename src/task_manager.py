@@ -79,3 +79,8 @@ class PharosBot:
     async def process_connect_twitter_zenith(account: Account) -> tuple[bool, str]:
         twitter = ConnectTwitterZenith(account)
         return await twitter.run_connect_twitter()
+    
+    @staticmethod
+    async def process_swap_zenith(account: Account) -> tuple[bool, str]:
+        twitter = ZenithSwapModule(account)
+        return await twitter.run_swap()
