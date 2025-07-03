@@ -34,6 +34,8 @@ class Console:
                 MenuItem("Twitter tasks", action="twitter_tasks"),
                 MenuItem('"Send To Friends" task', action="send_to_friends"),
                 MenuItem('Mint Pharos Testnet Badge', action="mint_pharos_badge"),
+                MenuItem('Mint Pharos Testnet Nft', action="mint_pharos_nft"),
+                
             ]),
             
             MenuItem("Faucets", children=[           

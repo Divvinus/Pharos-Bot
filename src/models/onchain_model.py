@@ -52,3 +52,8 @@ class ZenithQuoterContract(BaseContract):
 class PharosBadgeContract(BaseContract):
     address: str = "0x1da9f40036bee3fda37ddd9bff624e1125d8991d"
     abi_file: str = "pharos_badge.json"
+    
+@dataclass(slots=True)
+class PharosNftContract(BaseContract):
+    address: str = "0x42bb0d05d845fC157f2792dCEB8A8d27a653B5a9"
+    abi_file: str = "pharos_badge.json"

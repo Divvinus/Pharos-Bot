@@ -23,13 +23,27 @@ REFERRAL_CODES = [                                                  # Referral c
 
 
 """ --------------------------------- Send To Friends -----------------------------"""
-MAX_SEND_PHRS = 0.1                                                 # Maximum number of tokens to send
+MAX_SEND_PHRS = 0.01                                                 # Maximum number of tokens to send
 
 
 """ --------------------------------- Zenith Finance -----------------------------"""
 SLEEP_SWAP = (30, 90)                                               # (min, max) in seconds | Delay between swaps
 PAIR_SWAP = {                                                       # Swap pairs
-    1: ["PHRS", "USDT", 0],
+    1: ["PHRS", "USDT", 15],
+    2: ["wPHRS", "PHRS", 30], 
+    3: ["USDC", "USDT", 20],
+    4: ["USDT", "PHRS", 20],
+    5: ["wPHRS", "USDC", 10],
+    6: ["PHRS", "wPHRS", 20],
+    7: ["USDT", "wPHRS", 40],
+    8: ["USDC", "PHRS", 50],
+    9: ["wPHRS", "USDT", 20],
+    10: ["PHRS", "USDC", 10],
+    11: ["USDT", "USDC", 50],
+    12: ["USDC", "wPHRS", 35],
+    13: ["PHRS", "wPHRS", 10],
+    14: ["USDC_OLD", "PHRS", 100],
+    15: ["USDT_OLD", "PHRS", 100],
 }
 """
 Number_pair: [outgoing_token, received_token, %_of_outgoing_token]
@@ -47,7 +61,10 @@ AUTO_ROUTE_DELAY_RANGE_HOURS = (24, 30)                             # Range of w
 AUTO_ROUTE_REPEAT = True                                            # Repeat route automatically
 
 ROUTE_TASK = [
-    '',
+    'daily_check_in',
+    'full_faucets',
+    'send_to_friends',
+    'swap_zenith'
 ]
 
 """
@@ -75,8 +92,10 @@ Basic modules for route generation:
     - statistics_account
     
 6. 🍀 Disposable:
+    - connect_twitter_zenith
     - twitter_tasks
     - mint_pharos_badge
+    - mint_pharos_nft
 """
 
 
