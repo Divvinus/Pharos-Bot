@@ -286,29 +286,89 @@ class Wallet(Account):
         self,
         tx_params: dict,
         gas_buffer: float = 1.2,
-        gas_price_buffer: float = 1.05
+        gas_price_buffer: float = 1.05,
+        block_count: int = 25  # Количество блоков для анализа
     ) -> dict:
         gas_estimate = await self.web3.eth.estimate_gas(tx_params)
         tx_params["gas"] = int(gas_estimate * gas_buffer)
         
         if await self.is_eip1559_supported():
-            latest_block = await self.web3.eth.get_block('latest')
-            base_fee = latest_block['baseFeePerGas']
-            priority_fee = await self.web3.eth.max_priority_fee
+            # Получаем исторические данные о газе
+            base_fee_avg, priority_fee_avg = await self.get_gas_stats(block_count)
             
-            # Гарантировать минимальную цену газа
-            min_priority = int(priority_fee * gas_price_buffer)
-            min_fee = int((base_fee * 2 + priority_fee) * gas_price_buffer)
+            # Рассчитываем базовые значения с буфером
+            base_fee_val = int(base_fee_avg * gas_price_buffer)
+            priority_fee_val = int(priority_fee_avg * gas_price_buffer)
+            
+            # Генерируем случайные отклонения (+/- 5%)
+            base_fee_random = random.randint(int(base_fee_val * 0.95), int(base_fee_val * 1.05))
+            priority_fee_random = random.randint(int(priority_fee_val * 0.95), int(priority_fee_val * 1.05))
+            
+            # Гарантируем минимальные значения с вариацией
+            min_base_fee = max(base_fee_random, random.randint(1, 10))  # Случайное значение от 1 до 10
+            min_priority = max(priority_fee_random, random.randint(1, 5))  # Случайное значение от 1 до 5
+            
+            # Рассчитываем максимальную цену газа
+            max_fee_val = min_base_fee * 2 + min_priority
             
             tx_params.update({
-                "maxPriorityFeePerGas": max(min_priority, 1),  # Не меньше 1 wei
-                "maxFeePerGas": max(min_fee, 1)                # Не меньше 1 wei
+                "maxPriorityFeePerGas": min_priority,
+                "maxFeePerGas": max_fee_val
             })
         else:
-            gas_price = int(await self.web3.eth.gas_price * gas_price_buffer)
-            tx_params["gasPrice"] = max(gas_price, 1)  # Не меньше 1 wei
+            # Для legacy-транзакций
+            gas_price = await self.web3.eth.gas_price
+            gas_price_random = random.randint(int(gas_price * 0.95), int(gas_price * 1.05))
+            tx_params["gasPrice"] = max(
+                int(gas_price_random * gas_price_buffer), 
+                random.randint(1, 10)  # Случайное минимальное значение
+            )
             
         return tx_params
+
+    @retry_with_rpc_switch
+    async def get_gas_stats(self, block_count: int = 25) -> tuple[int, int]:
+        """Возвращает средний baseFeePerGas и средний приоритетный fee из последних блоков"""
+        try:
+            latest_block_number = await self.web3.eth.block_number
+            start_block = max(latest_block_number - block_count + 1, 0)
+            block_numbers = list(range(start_block, latest_block_number + 1))
+            
+            blocks = await asyncio.gather(
+                *[self.web3.eth.get_block(block_num, full_transactions=True) for block_num in block_numbers]
+            )
+            
+            base_fees = []
+            priority_fees = []
+            
+            for block in blocks:
+                if 'baseFeePerGas' in block:
+                    base_fees.append(block['baseFeePerGas'])
+                    
+                # Анализируем транзакции в блоке
+                if block['transactions']:
+                    for tx in block['transactions']:
+                        if 'maxPriorityFeePerGas' in tx:
+                            priority_fees.append(tx['maxPriorityFeePerGas'])
+            
+            # Если нет данных о приоритетных fee, используем текущий
+            if not priority_fees:
+                priority_fee_avg = await self.web3.eth.max_priority_fee
+            else:
+                priority_fee_avg = sum(priority_fees) // len(priority_fees)
+            
+            return (
+                sum(base_fees) // len(base_fees) if base_fees else 0,
+                priority_fee_avg
+            )
+            
+        except Exception:
+            latest_block = await self.web3.eth.get_block('latest')
+            priority_fee = await self.web3.eth.max_priority_fee
+            return (
+                latest_block.get('baseFeePerGas', 0),
+                priority_fee
+            )
     
     @retry_with_rpc_switch
     async def build_transaction_params(
