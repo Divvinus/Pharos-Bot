@@ -259,6 +259,27 @@ class ZenithSwapModule(AsyncLogger, Wallet):
                             0
                         ))
                     )
+                    
+                elif name_token_1 != "PHRS" and name_token_2 == "wPHRS":
+                    # ERC20 -> wPHRS
+                    amount_out_minimum = await self.calculate_amount_out_minimum(
+                        token_in=address_token_1,
+                        token_out=TOKENS_DATA_PHAROS.get("wPHRS"),
+                        amount_in=amount_in,
+                        fee=500
+                    )
+                    
+                    tx_params = await self.build_transaction_params(
+                        router_contract.functions.exactInputSingle((
+                            self._get_checksum_address(address_token_1),
+                            self._get_checksum_address(TOKENS_DATA_PHAROS.get("wPHRS")),
+                            500,                                                         
+                            self.wallet_address,                                        
+                            amount_in,                                                   
+                            amount_out_minimum,                                            
+                            0                                                              
+                        ))
+                    )
 
                 status, tx_hash = await self._process_transaction(tx_params)
                 
