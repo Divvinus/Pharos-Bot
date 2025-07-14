@@ -80,16 +80,16 @@ class SendToFriends(AsyncLogger, Wallet):
     async def verify_tasks(self, tx_hash: str) -> tuple[bool, str]:
         await self.logger_msg(f"Send a request for {self.TASK_MSG}", "info", self.wallet_address)
         
-        params = {
+        json_data  = {
             'address': self.wallet_address,
-            'task_id': "103",
-            'tx_hash': tx_hash,
+            'task_id': 103,
+            'tx_hash': f'0x{tx_hash}',
         }
         
         response = await self.api_client.send_request(
             method="POST",
             endpoint="/task/verify",
-            params=params,
+            json_data=json_data ,
             headers=self.get_headers()
         )
         
