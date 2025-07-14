@@ -5,11 +5,11 @@ from pydantic import (
 )
 from typing import Annotated, Dict, List, Tuple, Union
 
-from configs import PAIR_SWAP_ZENITH
+from configs import PAIR_SWAP_FAROSWAP
 
 
 def validate_pair_swap(value: Dict[int, Tuple[str, str, Union[int, float]]],
-                         param_name: str = "PAIR_SWAP_ZENITH",
+                         param_name: str = "PAIR_SWAP_FAROSWAP",
                          ) -> Dict[int, Tuple[str, str, Union[int, float]]]:
     has_active_pairs: bool = False
 
@@ -58,11 +58,11 @@ def validate_pair_swap(value: Dict[int, Tuple[str, str, Union[int, float]]],
     return value
 
 
-class ZenithSwapBaseModule(BaseModel):
+class FaroSwapBaseModule(BaseModel):
     pair: Annotated[
         Dict[int, Tuple[str, str, Union[int, float]]],
         AfterValidator(validate_pair_swap)
-    ] = PAIR_SWAP_ZENITH
+    ] = PAIR_SWAP_FAROSWAP
 
     model_config = ConfigDict(
         validate_default=True,

@@ -3,6 +3,7 @@ from src.tasks.registration import *
 from src.tasks.faucets import *
 from src.tasks.pharos_tasks import *
 from src.tasks.zenith import *
+from src.tasks.faroswap import *
 from src.models import Account
 
 
@@ -92,5 +93,11 @@ class PharosBot:
     
     @staticmethod
     async def process_swap_zenith(account: Account) -> tuple[bool, str]:
-        twitter = ZenithSwapModule(account)
-        return await twitter.run_swap()
+        onchain = ZenithSwapModule(account)
+        return await onchain.run_swap()
+    
+    """ ---------------------------------- FaroSwap -----------------------------------------"""
+    @staticmethod
+    async def process_swap_faroswap(account: Account) -> tuple[bool, str]:
+        async with FaroSwapModule(account) as onchain:
+            return await onchain.run_swap()

@@ -50,6 +50,10 @@ class Console:
                 MenuItem("Swap", action="swap_zenith"),
             ]),
             
+            MenuItem("FaroSwap", children=[           
+                MenuItem("Swap", action="swap_faroswap"),
+            ]),
+            
             MenuItem("Auto Route", action="auto_route"),
             
         ])
