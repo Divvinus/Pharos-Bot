@@ -128,9 +128,6 @@ class FaroSwapModule(AsyncLogger, Wallet):
                 f"Preparing data for task execution. Attempt {attempt + 1} / {MAX_RETRY_ATTEMPTS}", "info", self.wallet_address
             )  
             try:
-                # Получаем параметры свопа от API
-                swap_data = await self.get_swap_params(amount_in, address_token_1, address_token_2)
-                
                 # Approve токен если это не нативный PHRS
                 if name_token_1 != "PHRS" and amount_in > 0:
                     # Получаем адрес для approve из API
@@ -142,6 +139,9 @@ class FaroSwapModule(AsyncLogger, Wallet):
                     )
                     if not status:
                         return False, result
+                    
+                # Получаем параметры свопа от API
+                swap_data = await self.get_swap_params(amount_in, address_token_1, address_token_2)
                 
                 # Извлекаем предложенный газ из API (если есть)
                 api_gas_limit = swap_data.get('gasLimit', '0')
