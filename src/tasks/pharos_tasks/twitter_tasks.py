@@ -85,7 +85,7 @@ class TwitterTasks(AsyncLogger):
         response = await self.api_client.send_request(
             method="POST",
             endpoint="/task/verify",
-            json=data,
+            json_data=data,
             headers=self.get_headers()
         )
         
