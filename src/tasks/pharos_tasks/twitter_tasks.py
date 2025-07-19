@@ -48,6 +48,7 @@ class TwitterTasks(AsyncLogger):
         return {
             'accept': 'application/json, text/plain, */*',
             'authorization': f'Bearer {self.jwt_token}',
+            'content-type': 'application/json',
             'origin': 'https://testnet.pharosnetwork.xyz',
             'referer': 'https://testnet.pharosnetwork.xyz/'
         }
@@ -76,15 +77,15 @@ class TwitterTasks(AsyncLogger):
     async def verify_tasks(self, id: str) -> tuple[bool, str]:
         await self.logger_msg(f"Send a request for task verification ID: {id}", "info", self.wallet_address)
         
-        params = {
+        data = {
             'address': self.wallet_address,
-            'task_id': id,
+            'task_id': int(id),
         }
         
         response = await self.api_client.send_request(
             method="POST",
             endpoint="/task/verify",
-            params=params,
+            json=data,
             headers=self.get_headers()
         )
         
